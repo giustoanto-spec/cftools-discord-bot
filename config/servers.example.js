@@ -15,6 +15,19 @@ module.exports = [
     CFTOOLS_WEBHOOK_CHANNEL_ID: '1182012252715499591',
     CFTOOLS_WEBHOOK_USER_ID: '290182686365188096',
 
+    // Administrative extensions (opt in)
+    CFTOOLS_BANLIST_ID: '',
+    RCON_ENABLED: false,
+    GAMELABS_CUSTOM_ACTIONS: [
+      // { code: 'MyCustomAction', name: 'Custom action', context: 'world' }
+    ],
+
+    // Dedicated server status message
+    SERVER_STATUS_ENABLED: false,
+    SERVER_STATUS_CHANNEL_ID: '',
+    SERVER_STATUS_MESSAGE_ID: '', // Optional: existing bot status message ID
+    SERVER_STATUS_INTERVAL_IN_MINUTES: 5,
+
     // Command config
     STATISTICS_INCLUDE_ZONES_HEATMAP: true,
     STATISTICS_KEEP_PUPPETEER_BROWSER_OPEN: true,
