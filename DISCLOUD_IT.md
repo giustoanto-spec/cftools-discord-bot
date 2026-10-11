@@ -4,7 +4,25 @@ Usa il branch `feat/complete-cftools-features`, che contiene le nuove funzioni
 e `discloud.config`. La pull request non deve essere integrata per scaricare
 e caricare questo branch.
 
-## Prima del caricamento
+## Configurazione rapida dal pannello
+
+Lo ZIP include i modelli Discloud. Il comando `npm run start:discloud` crea
+`config/config.js`, `config/servers.js` e `config/.env` soltanto se assenti,
+senza sovrascrivere configurazioni esistenti. Al primo avvio, senza credenziali,
+il bot si ferma e mostra nella console i nomi delle chiavi mancanti.
+
+Nel file manager del pannello modifica `config/.env`: inserisci
+`DISCORD_BOT_TOKEN`, `CLIENT_ID`, `DISCORD_OWNER_ID`,
+`CFTOOLS_API_APPLICATION_ID`, `CFTOOLS_API_SECRET`, `CFTOOLS_SERVER_API_ID`
+e `SERVER_IPV4`. `SERVER_PORT` è 2302 per impostazione predefinita.
+`DISCORD_ADMIN_ROLE_IDS` e `DISCORD_MOD_ROLE_IDS` accettano ID separati da virgole.
+Salva e avvia nuovamente il bot. Nessun segreto è incluso nei modelli.
+
+Le funzioni che richiedono canali specifici sono inizialmente disattivate.
+Per attivare lo stato server compila `SERVER_STATUS_CHANNEL_ID`; per le altre
+funzioni puoi modificare `config/servers.js` seguendo INSTALLAZIONE_IT.md.
+
+## Configurazione manuale alternativa prima del caricamento
 
 1. Copia `config/config.example.js` in `config/config.js` e sostituisci gli ID
    di esempio con il tuo owner e i ruoli autorizzati. Rimuovi gli sviluppatori
@@ -29,7 +47,7 @@ Conserva una copia del database prima di sostituire un'applicazione esistente.
 
 Apri il pannello Discloud, accedi, premi **+ Upload** e seleziona **Upload ZIP**.
 Carica l'archivio e controlla la console: l'installazione esegue
-`npm ci --omit=dev`, poi il bot parte con `npm start`.
+`npm ci --omit=dev`, poi il bot parte con `npm run start:discloud`.
 
 La configurazione richiede `VERSION=latest`, ossia la versione Node LTS
 offerta da Discloud. Verifica nei log che sia Node 22 o superiore.

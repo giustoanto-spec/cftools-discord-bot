@@ -30,7 +30,8 @@
     "linter": "eslint src --fix",
     "writeLinter": "eslint src --output-file linter-output.txt",
     "docs": "jsdoc -u ./tutorials --readme README.md -c jsdoc.json",
-    "types": "npx -p typescript tsc src/**/*.js --declaration --allowJs --emitDeclarationOnly --outDir types"
+    "types": "npx -p typescript tsc src/**/*.js --declaration --allowJs --emitDeclarationOnly --outDir types",
+    "start:discloud": "node scripts/discloud-start.js"
   },
   "dependencies": {
     "@discordjs/rest": "2.0.0",
