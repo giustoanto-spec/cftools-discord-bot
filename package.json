@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node .",
     "dev": "nodemon run node --trace-warnings .",
-    "test": "node . mode=testing",
+    "test": "node --test tests/*.test.js",
     "commit": "cz",
     "docker:build": "docker build --tag cftools-discord-bot .",
     "docker:shell": "docker run -it --rm cftools-discord-bot sh",
@@ -35,13 +35,15 @@
   "dependencies": {
     "@discordjs/rest": "2.0.0",
     "@discordjs/ws": "2.0.3",
-    "cftools-sdk": "^3.5.0",
     "@mirasaki/logger": "file:./vendor/@mirasaki/logger",
+    "cftools-sdk": "^3.5.0",
+    "chalk": "^4.1.2",
     "common-tags": "^1.8.2",
     "discord.js": "14.12.1",
     "dotenv": "^17.2.1",
     "express": "^4.18.2",
-    "lokijs": "^1.5.12"
+    "lokijs": "^1.5.12",
+    "moment": "^2.31.0"
   },
   "devDependencies": {
     "commitizen": "^4.3.0",
@@ -87,5 +89,8 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

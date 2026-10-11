@@ -6,7 +6,7 @@
   },
   "extends": [
     "eslint:recommended",
-    "plugin:sonarjs/recommended"
+    "plugin:sonarjs/recommended-legacy"
   ],
   "plugins": [ "sonarjs" ],
   "root": true,

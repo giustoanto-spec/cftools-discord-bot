@@ -8,7 +8,9 @@ const APPLICATION_JSON = 'application/json';
 const { CFTOOLS_API_SECRET, CFTOOLS_API_APPLICATION_ID } = process.env;
 
 // Getting our servers config
-const serverConfig = require('../../config/servers.js');
+const serverConfig = process.argv.includes('mode=testing')
+  ? require('../../config/servers.example.js')
+  : require('../../config/servers.js');
 const { ApplicationCommandOptionType } = require('discord.js');
 const { MS_IN_ONE_HOUR, CFTOOLS_API_URL } = require('../constants');
 const logger = require('@mirasaki/logger');
@@ -20,6 +22,11 @@ debugLog('Initialize CFTools API client');
 // Creating a unique client for every entry
 const cftClient = new cftSDK.CFToolsClientBuilder()
   .withCache()
+  .withCredentials(CFTOOLS_API_APPLICATION_ID, CFTOOLS_API_SECRET)
+  .build();
+
+// Uncached administrative reads avoid stale entries after writes and stale server status.
+const adminClient = new cftSDK.CFToolsClientBuilder()
   .withCredentials(CFTOOLS_API_APPLICATION_ID, CFTOOLS_API_SECRET)
   .build();
 
@@ -183,38 +190,33 @@ const handleCFToolsError = (interaction, err, followUpInstead = false) => {
   else interaction.editReply(str);
 };
 
-// Fetch API token, valid for 24 hours, don't export function
-const fetchAPIToken = async () => {
-  // Getting our token
-  let token = await fetch(
-    `${ CFTOOLS_API_URL }/auth/register`,
-    {
-      method: 'POST',
-      body: JSON.stringify({
-        'application_id': CFTOOLS_API_APPLICATION_ID,
-        secret: CFTOOLS_API_SECRET
-      }),
-      headers: { 'Content-Type': APPLICATION_JSON }
-    }
-  );
-  token = (await token.json()).token;
-  return token;
-};
-
-let CFTOOLS_API_TOKEN;
-const tokenExpirationMS = MS_IN_ONE_HOUR * 23;
+// Refresh lazily, with one shared request and no background timer or unhandled rejection.
+let apiToken;
+let apiTokenExpiresAt = 0;
+let tokenRequest;
 const getAPIToken = async () => {
-  if (!CFTOOLS_API_TOKEN) {
-    debugLog('Creating CFTools API token');
-    // eslint-disable-next-line require-atomic-updates
-    CFTOOLS_API_TOKEN = await fetchAPIToken();
-    // Update our token every 23 hours
-    setInterval(async () => {
-      debugLog('Creating CFTools API token');
-      CFTOOLS_API_TOKEN = await fetchAPIToken();
-    }, tokenExpirationMS);
+  if (apiToken && Date.now() < apiTokenExpiresAt) return apiToken;
+  if (!tokenRequest) {
+    tokenRequest = (async () => {
+      const response = await fetch(`${ CFTOOLS_API_URL }/auth/register`, {
+        method: 'POST',
+        body: JSON.stringify({
+          application_id: CFTOOLS_API_APPLICATION_ID, secret: CFTOOLS_API_SECRET
+        }),
+        headers: { 'Content-Type': APPLICATION_JSON },
+        signal: AbortSignal.timeout(15000)
+      });
+      if (!response.ok) throw new Error(`CFTools authentication failed (HTTP ${ response.status }).`);
+      const data = await response.json();
+      if (!data.token) throw new Error('CFTools authentication returned no token.');
+      apiToken = data.token;
+      apiTokenExpiresAt = Date.now() + MS_IN_ONE_HOUR * 23;
+      return apiToken;
+    })().finally(() => {
+      tokenRequest = null;
+    });
   }
-  return CFTOOLS_API_TOKEN;
+  return tokenRequest;
 };
 
 // Send a message to online survivor
@@ -421,6 +423,7 @@ module.exports = {
   getTeleportLocationOptionValue,
   getTeleportLocations,
   cftClient,
+  adminClient,
   handleCFToolsError,
   getAPIToken,
   messageSurvivor,

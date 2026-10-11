@@ -1,6 +1,8 @@
 const logger = require('@mirasaki/logger');
 const chalk = require('chalk');
 const { autoLbCycle } = require('../../modules/auto-lb');
+const { startServerStatus } = require('../../modules/server-status');
+const { adminClient, serverConfig } = require('../../modules/cftClient');
 
 module.exports = (client) => {
   // Logging our process uptime to the developer
@@ -12,7 +14,7 @@ module.exports = (client) => {
 
   // Calculating the membercount
   const memberCount = client.guilds.cache.reduce(
-    (previousValue, currentValue) => previousValue += currentValue.memberCount, 0
+    (previousValue, currentValue) => previousValue + currentValue.memberCount, 0
   ).toLocaleString('en-US');
 
   // Getting the server count
@@ -23,4 +25,7 @@ module.exports = (client) => {
 
   // Initialize our auto-leaderboard module - if applicable
   autoLbCycle(client);
+  startServerStatus(client, adminClient, serverConfig, (err) => {
+    logger.syserr(`Server status update failed: ${ err.message }`);
+  });
 };

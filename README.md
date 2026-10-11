@@ -69,18 +69,22 @@
 - Server info overview
 - And best of all, everything is configurable!
 
-<h2 id="planned-features">💡 Planned Features</h2>
+<h2 id="administrative-features">🛠️ Administrative features</h2>
 
-- Execute raw RCon commands - I'm looking for someone that is very knowledgeable on available RCon command
-- Dedicated Server Status channel, overview with online/offline status
-- Manage Priority Queue
-- Manage Ban lists
-- Manage Whitelists
-- Custom GameLab action support
+- Raw RCon commands: `/rcon` (opt in per server)
+- Dedicated server status channel with one automatically updated message
+- Priority queue management: `/priority-queue view|add|remove`
+- Banlist management: `/banlist view|add|remove`, with paginated player history and deletion by ban ID
+- Whitelist management: `/whitelist view|add|remove`
+- Configured custom GameLabs actions: `/gamelabs-action`, with autocomplete and typed JSON parameters
+
+Administrative commands require the bot's Administrator permission level. New modules are configurable per server.
+
+See [the Italian setup and command guide](./INSTALLAZIONE_IT.md) for configuration, examples and testing.
 
 <h2 id="installation">🔨 Installation</h2>
 
-Check out [the wiki for this project](https://mirasaki.dev/docs/cftools/discord-bot) to learn how to configure and run this bot
+Start with [the local Italian installation guide](./INSTALLAZIONE_IT.md). You can also check out [the wiki for this project](https://mirasaki.dev/docs/cftools/discord-bot) to learn how to configure and run this bot
 
 > Open source, self-hosted, and MIT licensed, meaning you're in full control.
 
